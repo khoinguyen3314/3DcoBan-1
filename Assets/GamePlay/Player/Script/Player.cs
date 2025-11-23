@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
@@ -6,6 +7,7 @@ public class Player : MonoBehaviour
     public Rigidbody rb;
     public bool jump = false;
     float speed = 1.2f;
+    public bool stop = false;
 
     void Start()
     {
@@ -17,11 +19,20 @@ public class Player : MonoBehaviour
     // Sử dụng FixedUpdate cho các lệnh vật lý (như Rigidbody.MovePosition)
     void FixedUpdate()
     {
-        Run();
+        
     }
-
+    private void Update()
+    {
+        Run();
+        
+        
+            StartCoroutine(Dropping());
+        
+        
+    }
     public void Run()
     {
+        if (stop == true) return;
         float ipHorizontal = Input.GetAxis(axisName: "Horizontal");
         float ipVertical = Input.GetAxis(axisName: "Vertical");
 
@@ -64,14 +75,15 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift) && (ipHorizontal != 0 || ipVertical != 0))
         {
             ani.SetBool("Run", true);
-            speed = 3f;
+            speed = 0.6f;
         }
         else
         {
-            speed = 1.2f;
+            speed = 0.2f;
             ani.SetBool("Run", false);
         }
     }
+   
 
     // Logic Nhảy/Tiếp đất
     void OnCollisionEnter(Collision collision)
@@ -79,6 +91,16 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             jump = true;
+        }
+    }
+    public IEnumerator Dropping()
+    {
+        if (Input.GetKeyDown(KeyCode.F) && stop == false)
+        {
+            ani.SetTrigger("Drop");
+            stop = true;
+            yield return new WaitForSeconds(0.3f);
+            stop = false;
         }
     }
 }
