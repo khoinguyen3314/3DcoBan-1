@@ -6,9 +6,10 @@ public class Player : MonoBehaviour
     public Animator ani;
     public Rigidbody rb;
     public bool jump = false;
-    float speed = 1.2f;
+    float speed;
     public bool stop = false;
-
+    [SerializeField] private float walkSpeed = 0.2f;
+    [SerializeField] private float Runspeed = 2f;
     void Start()
     {
         // Gán Rigidbody và Animator nếu chúng chưa được gán trong Inspector
@@ -75,11 +76,11 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift) && (ipHorizontal != 0 || ipVertical != 0))
         {
             ani.SetBool("Run", true);
-            speed = 0.6f;
+            speed = Runspeed;
         }
         else
         {
-            speed = 0.2f;
+            speed = walkSpeed;
             ani.SetBool("Run", false);
         }
     }
